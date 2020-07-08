@@ -89,6 +89,7 @@
 
 <script>
   import Joi from 'joi';
+  import axios from 'axios';
   import { signUpValidationSchema } from '../helpers/validation.helper';
 
   export default {
@@ -107,13 +108,27 @@
       signup() {
         this.errorMessage = '';
         if (this.validClient()) {
-          console.log(this.client);
-          // fetch(SIGN_UP_URL,{
-          //   method: 'post',
-          //   body: {
-          //     client
-          //   }
-          // })
+          const body = {
+            clientId: this.client.clientId,
+            name: this.client.name,
+            phone: this.client.phone,
+            email: this.client.email,
+            password: this.client.password
+          };
+          fetch('http://localhost:5000/signup', {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+              'content-type': 'application/json'
+            }
+          }).then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            return response.json().then((error) => {
+              throw new Error(error.message);
+            });
+          });
         }
       },
       validClient() {
