@@ -5,7 +5,7 @@
       <div class="form-group">
         <label for="exampleInputEmail1">Email</label>
         <input
-          v-model="client.email"
+          v-model="loginCredentials.email"
           type="email"
           class="form-control"
           id="email"
@@ -22,7 +22,7 @@
         <div class="form-group col-md-6">
           <label for="exampleInputPassword1">Password</label>
           <input
-            v-model="client.password"
+            v-model="loginCredentials.password"
             type="password"
             class="form-control"
             id="pasword"
@@ -42,12 +42,12 @@
 
 <script>
   import Joi from 'joi';
-  import { signInValidationSchema } from '../helpers/validation.helper';
+  import { loginValidationSchema } from '../helpers/validation.helper';
 
   export default {
     data: () => ({
       errorMessage: '',
-      client: {
+      loginCredentials: {
         email: '',
         password: ''
       }
@@ -55,12 +55,29 @@
     methods: {
       login() {
         this.errorMessage = '';
-        if (this.validUser()) {
-          console.log(this.client);
+        if (this.validLogin()) {
+          const body = {
+            email: this.loginCredentials.email,
+            password: this.loginCredentials.password
+          };
+          fetch('http://localhost:5000/login', {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+              'content-type': 'application/json'
+            }
+          }).then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            return response.json().then((error) => {
+              throw new Error(error.message);
+            });
+          });
         }
       },
-      validUser() {
-        const result = Joi.validate(this.client, signInValidationSchema());
+      validLogin() {
+        const result = Joi.validate(this.loginCredentials, loginValidationSchema());
 
         if (result.error === null) {
           return true;
