@@ -15,6 +15,18 @@
         />
       </div>
       <div class="form-group">
+        <label for="name">Documento</label>
+        <input
+          v-model="client.clientId"
+          type="text"
+          class="form-control"
+          id="clientId"
+          aria-describedby="clientIdHelp"
+          placeholder="Enter name"
+          required
+        />
+      </div>
+      <div class="form-group">
         <label for="exampleInputEmail1">Telefono</label>
         <input
           v-model="client.phone"
@@ -37,7 +49,9 @@
           placeholder="Enter email"
           required
         />
-        <small id="emailHelp" class="form-text text-muted">Nunca compartiremos tu email con nadie</small>
+        <small id="emailHelp" class="form-text text-muted"
+          >Nunca compartiremos tu email con nadie</small
+        >
       </div>
 
       <div class="form-row">
@@ -67,71 +81,61 @@
       <button type="submit" class="btn btn-primary">Aceptar</button>
     </form>
     <br />
-    <div v-if="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+    <div v-if="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
   </div>
 </template>
 
 <script>
-import Joi from "joi";
+  import Joi from 'joi';
+  import { signUpValidationSchema } from '../helpers/validation.helper';
 
-const validationSchema = Joi.object().keys({
-  name: Joi.string()
-    .regex(/(^[a-zA-Z0-9_]+$)/)
-    .min(2)
-    .max(30)
-    .required(),
-  phone: Joi.number().integer(),
-  email: Joi.string().email({
-    minDomainSegments: 2,
-    tlds: { allow: ["com", "net"] }
-  }),
-  password: Joi.string()
-    .trim()
-    .min(10)
-    .required(),
-  confirmPassword: Joi.string()
-    .trim()
-    .min(10)
-    .required()
-});
-
-export default {
-  data: () => ({
-    errorMessage: "",
-    client: {
-      name: "",
-      phone: "",
-      email: "",
-      password: "",
-      confirmPassword: ""
-    }
-  }),
-  methods: {
-    signup() {
-      if (this.validUser()) {
-        console.log(this.client);
+  export default {
+    data: () => ({
+      errorMessage: '',
+      client: {
+        name: '',
+        phone: '',
+        clientId: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
       }
-    },
-    validUser() {
-      if (this.client.password !== this.client.confirmPassword) {
-        this.errorMessage = "Passwords must match. 🙈";
+    }),
+    methods: {
+      signup() {
+        this.errorMessage = '';
+        if (this.validClient()) {
+          console.log(this.client);
+          // fetch(SIGN_UP_URL,{
+          //   method: 'post',
+          //   body: {
+          //     client
+          //   }
+          // })
+        }
+      },
+      validClient() {
+        if (this.client.password !== this.client.confirmPassword) {
+          this.errorMessage = 'Passwords must match. 🙈';
+          return false;
+        }
+
+        const result = Joi.validate(this.client, signUpValidationSchema());
+
+        if (result.error === null) {
+          return true;
+        }
+
+        if (result.error.message.includes('name')) {
+          this.errorMessage = 'Name is invalid 😭';
+        } else {
+          this.errorMessage = 'Password is invalid 🙈';
+        }
+
         return false;
       }
-
-      const result = Joi.validate(this.client, validationSchema);
-
-      if (result.error === null) {
-        return true;
-      }
-
-      if (result.error.message.includes("name")) {
-        this.errorMessage = "Name is invalid 😭";
-      } else {
-        this.errorMessage = "Password is invalid 🙈";
-      }
-
-      return false;
     }
-  }
-};
+  };
 </script>
