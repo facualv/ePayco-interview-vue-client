@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <router-link class="nav-link" :to="{ name: 'home'}" role="button">Home</router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -16,14 +16,8 @@
 
       <div class="collapse navbar-collapse" id="navbarColor02">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">
-              Home
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Features</a>
+            <router-link class="nav-link" :to="{ name: 'login'}" role="button">Login</router-link>
           </li>
         </ul>
       </div>
