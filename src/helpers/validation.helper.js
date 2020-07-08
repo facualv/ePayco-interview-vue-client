@@ -15,16 +15,16 @@ const signUpValidationSchema = function() {
     }),
     password: Joi.string()
       .trim()
-      .min(10)
+      .min(6)
       .required(),
     confirmPassword: Joi.string()
       .trim()
-      .min(10)
+      .min(6)
       .required()
   });
 };
 
-const signInValidationSchema = function(params) {
+const loginValidationSchema = function(params) {
   return Joi.object().keys({
     email: Joi.string().email({
       minDomainSegments: 2,
@@ -32,9 +32,9 @@ const signInValidationSchema = function(params) {
     }),
     password: Joi.string()
       .trim()
-      .min(10)
+      .min(6)
       .required()
   });
 };
 
-export { signUpValidationSchema, signInValidationSchema };
+export { signUpValidationSchema, loginValidationSchema };
