@@ -3,7 +3,6 @@ import Joi from 'joi';
 const signUpValidationSchema = function() {
   return Joi.object().keys({
     name: Joi.string()
-      .regex(/(^[a-zA-Z0-9_]+$)/)
       .min(2)
       .max(30)
       .required(),
