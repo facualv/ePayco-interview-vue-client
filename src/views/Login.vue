@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <form @submit.prevent="login">
+    <form @submit.prevent="login()">
       <legend>Ingrese a su cuenta</legend>
       <div class="form-group">
         <label for="exampleInputEmail1">Email</label>
@@ -62,18 +62,33 @@
           };
           fetch('http://localhost:5000/login', {
             method: 'POST',
-            body: JSON.stringify(body),
+            credentials: 'include',
             headers: {
               'content-type': 'application/json'
-            }
-          }).then((response) => {
-            if (response.ok) {
-              return response.json();
-            }
-            return response.json().then((error) => {
-              throw new Error(error.message);
+            },
+            body: JSON.stringify(body)
+          })
+            .then((response) => {
+              if (response) {
+                // Still need to work in showing the response  somewhere!!!
+                return response.json();
+                console.log(JSON.stringify(response.json()));
+              }
+              return response.json().then((error) => {
+                throw new Error(error.message);
+              });
+            })
+            .then((result) => {
+              // localStorage.sessionId = result.sessId;
+              setTimeout(() => {
+                this.$router.push('/dashboard');
+              }, 1000);
+            })
+            .catch((error) => {
+              setTimeout(() => {
+                this.errorMessage = error.message;
+              }, 1000);
             });
-          });
         }
       },
       validLogin() {
