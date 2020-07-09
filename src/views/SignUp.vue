@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <form @submit.prevent="signup">
+    <form @submit.prevent="signup()">
       <legend>Ingrese sus datos</legend>
       <div class="form-group">
         <label for="name">Nombre</label>
@@ -121,14 +121,20 @@
             headers: {
               'content-type': 'application/json'
             }
-          }).then((response) => {
-            if (response.ok) {
-              return response.json();
-            }
-            return response.json().then((error) => {
-              throw new Error(error.message);
+          })
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              }
+              return response.json().then((error) => {
+                throw new Error(error.message);
+              });
+            })
+            .then((result) => {
+              setTimeout(() => {
+                this.$router.push('/login');
+              }, 1000);
             });
-          });
         }
       },
       validClient() {
