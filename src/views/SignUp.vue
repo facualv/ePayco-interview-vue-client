@@ -18,7 +18,7 @@
         <label for="name">Documento</label>
         <input
           v-model="client.clientId"
-          type="text"
+          type="number"
           class="form-control"
           id="clientId"
           aria-describedby="clientIdHelp"
@@ -30,7 +30,7 @@
         <label for="exampleInputEmail1">Telefono</label>
         <input
           v-model="client.phone"
-          type="text"
+          type="number"
           class="form-control"
           id="phone"
           aria-describedby="emailphone"
@@ -91,6 +91,7 @@
   import Joi from 'joi';
   import axios from 'axios';
   import { signUpValidationSchema } from '../helpers/validation.helper';
+  import Swal from 'sweetalert2';
 
   export default {
     data: () => ({
@@ -108,6 +109,7 @@
       signup() {
         this.errorMessage = '';
         if (this.validClient()) {
+          const url = 'http://localhost:5000/signup';
           const body = {
             clientId: this.client.clientId,
             name: this.client.name,
@@ -115,25 +117,32 @@
             email: this.client.email,
             password: this.client.password
           };
-          fetch('http://localhost:5000/signup', {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-              'content-type': 'application/json'
-            }
-          })
+
+          axios
+            .post(url, body)
             .then((response) => {
-              if (response.ok) {
-                return response.json();
-              }
-              return response.json().then((error) => {
-                throw new Error(error.message);
+              console.log(response.data.message);
+              Swal.fire({
+                icon: 'success',
+                title: 'Operacion exitosa',
+                text: response.data.message,
+                showConfirmButton: false,
+                timer: 1500
               });
-            })
-            .then((result) => {
               setTimeout(() => {
                 this.$router.push('/login');
               }, 1000);
+            })
+            .catch((error) => {
+              Swal.fire({
+                title: 'Error!',
+                text: error.message,
+                icon: 'error',
+                showConfirmButton: true,
+                confirmButtonText: 'Ok'
+              });
+
+              console.log(error.response);
             });
         }
       },

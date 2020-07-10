@@ -20,7 +20,7 @@
 
       <div class="form-row">
         <div class="form-group col-md-6">
-          <label for="exampleInputPassword1">Password</label>
+          <label for="pasword">Password</label>
           <input
             v-model="loginCredentials.password"
             type="password"
@@ -42,6 +42,9 @@
 
 <script>
   import Joi from 'joi';
+  import axios from 'axios';
+  import Swal from 'sweetalert2';
+
   import { loginValidationSchema } from '../helpers/validation.helper';
 
   export default {
@@ -56,38 +59,34 @@
       login() {
         this.errorMessage = '';
         if (this.validLogin()) {
+          const url = 'http://localhost:5000/login';
           const body = {
             email: this.loginCredentials.email,
             password: this.loginCredentials.password
           };
-          fetch('http://localhost:5000/login', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-              'content-type': 'application/json'
-            },
-            body: JSON.stringify(body)
-          })
+
+          axios
+            .post(url, body)
             .then((response) => {
-              if (response) {
-                // Still need to work in showing the response  somewhere!!!
-                return response.json();
-                console.log(JSON.stringify(response.json()));
-              }
-              return response.json().then((error) => {
-                throw new Error(error.message);
+              console.log(response.data);
+              Swal.fire({
+                icon: 'success',
+                title: 'Login Exitoso bienvenido a tu panel de cotrol',
+                showConfirmButton: false,
+                timer: 1500
               });
-            })
-            .then((result) => {
-              // localStorage.sessionId = result.sessId;
               setTimeout(() => {
                 this.$router.push('/dashboard');
               }, 1000);
             })
             .catch((error) => {
-              setTimeout(() => {
-                this.errorMessage = error.message;
-              }, 1000);
+              Swal.fire({
+                title: 'Error!',
+                text: error,
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+              console.log(err);
             });
         }
       },
@@ -98,9 +97,19 @@
           return true;
         }
         if (result.error.message.includes('name')) {
-          this.errorMessage = 'Name is invalid 😭';
+          Swal.fire({
+            title: 'Error!',
+            text: 'Name is Invalid 🙈',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
         } else {
-          this.errorMessage = 'Password is invalid 🙈';
+          Swal.fire({
+            title: 'Error!',
+            text: 'Password is Invalid 🙈',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
         }
         return false;
       }
