@@ -152,10 +152,7 @@
               icon: 'error',
               confirmButtonText: 'Cool'
             });
-            console.log(err);
           });
-
-        console.log('Recharge Body', body);
       },
 
       getBalance() {
@@ -189,7 +186,6 @@
             });
             console.log(error);
           });
-        console.log('Get Balance Body', body);
       }
     }
   };
