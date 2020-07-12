@@ -104,16 +104,18 @@
         axios
           .post(url, body)
           .then((response) => {
-            if (response.data.error) {
+            const { error, message } = response.data;
+
+            if (error == true || message.includes('INVALID')) {
               Swal.fire({
                 title: 'Error!',
-                text: response.data.message,
+                text: message,
                 icon: 'error'
               });
             } else {
               Swal.fire({
                 icon: 'success',
-                title: response.data.message,
+                title: message,
                 showConfirmButton: false,
                 timer: 3000
               });
@@ -126,9 +128,7 @@
               icon: 'error',
               confirmButtonText: 'OK'
             });
-            console.log(error);
           });
-        console.log('Payment', body);
       }
     }
   };
