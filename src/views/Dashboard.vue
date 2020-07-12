@@ -1,36 +1,25 @@
 <template>
   <div class="container">
     <div class="jumbotron">
-      <h1 class="display-3">PANEL DE CONTROL</h1>
+      <h1 class="display-3">PANEL DE PAGOS</h1>
       <p class="lead">
-        A traves de este panel podras hacer pagos y recargar tu billetera
+        Para confirmar un pago deberas ingresar el token de seguridad y el id de session a
+        que te enviamos a tu email
       </p>
-      <form class="form-inline">
-        <div class="form-group mb-2">
-          <button type="submit" class="btn btn-primary">Consultar Saldo</button>
-        </div>
-        <div class="form-group ml-2 pl-10">
-          <div v-if="currentBalance" type="submit" class="alert alert-danger">
-            {{ currentBalance }}
-          </div>
-        </div>
-      </form>
     </div>
-
     <br />
-
     <div class="row">
       <div class="col-md-12">
         <h1 class="text-center">Emitir un pago</h1>
         <form class="text-center" style="margin:auto" @submit.prevent="payment()">
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label for="ammount">Ingrese el monto</label>
+              <label for="amount">Ingrese el monto</label>
               <input
-                v-model="paymentData.ammount"
+                v-model="paymentData.amount"
                 type="number"
                 class="form-control"
-                id="paymentAmmount"
+                id="paymentAmount"
                 placeholder="Monto del Pago (solo numeros)"
               />
             </div>
@@ -50,10 +39,6 @@
           </button>
         </form>
         <br />
-        <p class="text-danger">
-          Luego de que envies los datos del pago, te enviaremos a tu correo un token de
-          seguridad y un id de sesión, ingresalos para confirmar el pago
-        </p>
         <br />
         <form class="text-center" style="margin:auto" @submit.prevent="payment()">
           <div class="form-row">
@@ -106,7 +91,7 @@
     methods: {
       payment() {
         const body = {
-          ammount: this.paymentData.ammount,
+          amount: this.paymentData.amount,
           detail: this.paymentData.detail,
           token: this.paymentData.token,
           sessionId: this.paymentData.sessionId
@@ -119,32 +104,29 @@
         axios
           .post(url, body)
           .then((response) => {
-            if (response.data.message.includes('INVALID')) {
+            if (response.data.error) {
               Swal.fire({
-                icon: 'error',
-                title: 'Payment Confirmation Failed',
+                title: 'Error!',
                 text: response.data.message,
-                timer: 1200
+                icon: 'error'
               });
             } else {
               Swal.fire({
                 icon: 'success',
-                title: 'Payment Successfull',
-                text: response.data.message,
+                title: response.data.message,
                 showConfirmButton: false,
                 timer: 3000
               });
             }
-            console.log(response.data);
           })
           .catch((error) => {
             Swal.fire({
               title: 'Error!',
-              text: error.message,
+              text: error.response.data.message,
               icon: 'error',
               confirmButtonText: 'OK'
             });
-            console.log(err);
+            console.log(error);
           });
         console.log('Payment', body);
       }

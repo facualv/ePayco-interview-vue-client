@@ -10,7 +10,7 @@
           class="form-control"
           id="email"
           aria-describedby="emailHelp"
-          placeholder="Enter email"
+          placeholder="Ingrese su email"
           required
         />
         <small id="emailHelp" class="form-text text-muted"
@@ -19,7 +19,7 @@
       </div>
 
       <div class="form-row">
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-12">
           <label for="pasword">Password</label>
           <input
             v-model="loginCredentials.password"
@@ -71,9 +71,10 @@
               console.log(response.data);
               Swal.fire({
                 icon: 'success',
-                title: 'Login Exitoso bienvenido a tu panel de cotrol',
+                title: 'Bienvenido a tu panel de pagos',
+                text: response.data.message,
                 showConfirmButton: false,
-                timer: 1500
+                timer: 3000
               });
               setTimeout(() => {
                 this.$router.push('/dashboard');
@@ -82,11 +83,11 @@
             .catch((error) => {
               Swal.fire({
                 title: 'Error!',
-                text: error,
+                text: error.response.data.message,
                 icon: 'error',
                 confirmButtonText: 'OK'
               });
-              console.log(err);
+              console.log(error);
             });
         }
       },
@@ -96,17 +97,10 @@
         if (result.error === null) {
           return true;
         }
-        if (result.error.message.includes('name')) {
+        if (result.error.message.includes('email')) {
           Swal.fire({
             title: 'Error!',
-            text: 'Name is Invalid 🙈',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          });
-        } else {
-          Swal.fire({
-            title: 'Error!',
-            text: 'Password is Invalid 🙈',
+            text: 'Email is Invalid 🙈',
             icon: 'error',
             confirmButtonText: 'OK'
           });

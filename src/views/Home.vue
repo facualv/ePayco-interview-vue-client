@@ -20,12 +20,12 @@
         >
           <div class="form-row">
             <div class="form-group col-md-12">
-              <label for="rechargAmmount">Ingrese el monto de la recarga</label>
+              <label for="rechargAmount">Ingrese el monto de la recarga</label>
               <input
-                v-model="rechargeData.ammount"
+                v-model="rechargeData.amount"
                 type="number"
                 class="form-control"
-                id="rechargAmmount"
+                id="rechargAmount"
                 placeholder="Monto"
               />
             </div>
@@ -60,9 +60,7 @@
               />
             </div>
           </div>
-          <button type="submit" class="btn btn-primary col-md-12">
-            Recargar
-          </button>
+          <button type="submit" class="btn btn-primary col-md-12">Recargar</button>
         </form>
       </div>
       <div class="col-md-6">
@@ -95,9 +93,7 @@
               />
             </div>
           </div>
-          <button type="submit" class="btn btn-primary col-md-12">
-            Consultar Saldo
-          </button>
+          <button type="submit" class="btn btn-primary col-md-12">Consultar Saldo</button>
         </form>
       </div>
     </div>
@@ -116,7 +112,7 @@
         detail: ''
       },
       rechargeData: {
-        ammount: '',
+        amount: '',
         clientId: '',
         phone: '',
         detail: ''
@@ -129,7 +125,7 @@
 
         const body = {
           clientId: this.rechargeData.clientId,
-          ammount: this.rechargeData.ammount,
+          amount: this.rechargeData.amount,
           phone: this.rechargeData.phone,
           detail: this.rechargeData.detail
         };
@@ -152,7 +148,7 @@
           .catch((res, err) => {
             Swal.fire({
               title: 'Error!',
-              text: JSON.stringify(res.data.message),
+              text: response.data.message,
               icon: 'error',
               confirmButtonText: 'Cool'
             });
@@ -177,21 +173,21 @@
           .then((response) => {
             Swal.fire({
               icon: 'success',
-              title: response.data.mesage,
-              text: 'Your current Balance is: ' + response.data.currentBalance,
+              title: response.data.message,
+              text: 'Your current Balance is: ' + response.data.balance,
               showConfirmButton: true,
               confirmButtonText: 'OK'
             });
             console.log(response.data);
           })
-          .catch((err) => {
+          .catch((error) => {
             Swal.fire({
               title: 'Error!',
-              text: err,
+              text: error,
               icon: 'error',
               confirmButtonText: 'OK'
             });
-            console.log(err);
+            console.log(error);
           });
         console.log('Get Balance Body', body);
       }

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <form @submit.prevent="signup()">
-      <legend>Ingrese sus datos</legend>
+      <legend class="text-center">Ingrese sus datos personales</legend>
       <div class="form-group">
         <label for="name">Nombre</label>
         <input
@@ -10,7 +10,7 @@
           class="form-control"
           id="name"
           aria-describedby="nameHelp"
-          placeholder="Enter name"
+          placeholder="Ingrese su nombre"
           required
         />
       </div>
@@ -22,19 +22,19 @@
           class="form-control"
           id="clientId"
           aria-describedby="clientIdHelp"
-          placeholder="Enter name"
+          placeholder="Ingrese su documento"
           required
         />
       </div>
       <div class="form-group">
-        <label for="exampleInputEmail1">Telefono</label>
+        <label for="phone">Telefono</label>
         <input
           v-model="client.phone"
           type="number"
           class="form-control"
           id="phone"
-          aria-describedby="emailphone"
-          placeholder="Enter phone"
+          aria-describedby="phoneHelp"
+          placeholder="Ingrese su telefono"
           required
         />
       </div>
@@ -56,24 +56,24 @@
 
       <div class="form-row">
         <div class="form-group col-md-6">
-          <label for="exampleInputPassword1">Password</label>
+          <label for="password">Password</label>
           <input
             v-model="client.password"
             type="password"
             class="form-control"
-            id="pasword"
-            placeholder="Password"
+            id="password"
+            placeholder="Ingrese el password"
             required
           />
         </div>
         <div class="form-group col-md-6">
-          <label for="exampleInputPassword1">Confirmar Password</label>
+          <label for="passwordConfirm">Confirmar Password</label>
           <input
             v-model="client.confirmPassword"
             type="password"
             class="form-control"
-            id="confirmPassword1"
-            placeholder="Confirm Password"
+            id="passwordConfirm"
+            placeholder="Confirme el password elegido"
             required
           />
         </div>
@@ -121,13 +121,13 @@
           axios
             .post(url, body)
             .then((response) => {
-              console.log(response.data.message);
+              // console.log(response.data.message);
               Swal.fire({
                 icon: 'success',
                 title: 'Operacion exitosa',
                 text: response.data.message,
                 showConfirmButton: false,
-                timer: 1500
+                timer: 3000
               });
               setTimeout(() => {
                 this.$router.push('/login');
@@ -136,7 +136,7 @@
             .catch((error) => {
               Swal.fire({
                 title: 'Error!',
-                text: error.message,
+                text: error.response.data.message,
                 icon: 'error',
                 showConfirmButton: true,
                 confirmButtonText: 'Ok'
